@@ -1,0 +1,48 @@
+name: Development
+
+on: # event
+# add a push event that triggers the workflow
+  push:
+    branches:
+      - main
+
+jobs: # job 하나하나가 빌드 서버 하나하나라고 생각하면 됨
+  build-test:
+
+    # add a build server of ubuntu-latest
+    runs-on: ubuntu-latest
+  
+    steps: # 어떤 단계로 실행시킬 것인가 > step 아래는 어레이임 순서대로 실행!
+      # add a new step to checkout the code
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      # add a new step to install .NET sdk 7
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 7.x
+      
+      # add a new step to restore nuget packages
+      - name: Restore nuget packages
+        run: dotnet restore
+  
+      # # add a new step to build the entire solution
+      # - name: Build
+      #   run: dotnet build
+
+      # # add a new step to test the solution
+      # - name: Test
+      #   run: dotnet test
+
+      # add a new step to build the entire solution with Release configuration
+      - name: Build
+        run: dotnet build --configuration Release
+
+      # add a new step to test the solution with Release configuration
+      - name: Test
+        run: dotnet test --configuration Release
+
+      # add a new step to publish src/WebApi with Release configuration
+      - name: Publish
+        run: dotnet publish src/WebApi --configuration Release --output ./publish
