@@ -1,0 +1,84 @@
+{
+    "name": "DevContainer",
+    
+    "build": { // 도커파일을 불러오는 형태
+      // 컨테이너 기본 이미지 설정
+      "dockerfile": "./Dockerfile",
+        "context": ".",
+        "args": {
+            "VARIANT": "7.0" // 데비앙 리눅스 기반의 7.0, 이 값으로 대체되서 사용된다.
+        }
+    },
+    
+    "forwardPorts": [
+      // 포트 포워딩
+      3000, 5000, 5001, 8080, 44380
+    ],
+    
+    "features": {
+      // 추가 기능
+      // Azure CLI
+      "ghcr.io/devcontainers/features/azure-cli:latest": {
+        "version": "latest"
+      },
+  
+      // GitHub CLI
+      "ghcr.io/devcontainers/features/github-cli:latest": {
+        "version": "latest"
+      },
+  
+      // node.js
+      "ghcr.io/devcontainers/features/node:latest": {
+        "version": "lts",
+        "nodeGypDependencies": true,
+        "nvmInstallPath": "/usr/local/share/nvm"
+      },
+  
+      // common utilities
+      "ghcr.io/devcontainers/features/common-utils:latest": {
+        "installZsh": true,
+        "installOhMyZsh": true,
+        "upgradePackages": true,
+        "username": "vscode", // root가 되면 털렸을 때 문제가 있기 때문
+        "uid": "1000",
+        "gid": "1000"
+      }
+    },
+    
+    "overrideFeatureInstallOrder": [
+      // 추가 기능 설치 순서
+      "ghcr.io/devcontainers/features/common-utils"
+    ],
+    
+    "customizations": {
+      "vscode": {
+        // 코드스페이스 커스터마이징
+        "extensions": [
+          // VS Code 익스텐션 검색 후 나온 uri에 있는 itemName을 붙이면 된다.
+          // GitHub 코파일럿 관련
+          "GitHub.copilot",
+          "GitHub.copilot-labs",
+
+          // C# 관련
+          "ms-dotnettools.vscode-dotnet-pack",
+          "kreativ-software.csharpextensions",
+
+          // Azure 관련
+          "ms-vscode.vscode-node-azure-pack",
+          "ms-azuretools.vscode-bicep"
+        ],
+    
+        "settings": {
+          // VS Code 환경 설정 -> 수정하고 싶은 설정에서 설정을 Json으로 복사
+          "editor.minimap.enabled": false,
+          "explorer.sortOrder": "type" // 파일 확장자순 정렬
+        }
+      }
+    },
+  
+    // post-create.sh 스크립트 실행 후 로그 출력 명령어
+    "postCreateCommand": "/bin/bash ./.devcontainer/post-create.sh > ~/post-create.log",
+  
+    // DevContainer 사용자 계정
+    "remoteUser": "vscode"
+  }
